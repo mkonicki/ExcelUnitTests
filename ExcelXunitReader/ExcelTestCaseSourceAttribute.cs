@@ -31,10 +31,9 @@ namespace ExcelReader
 
         private IEnumerable<TestCaseParameters> GetTestCasesFor(IMethodInfo method)
         {
-            using (var package = new ExcelDataReader(FilePath, SheetName))
-            {
-                return package.GetData().Select(s => new TestCaseParameters(new object[] { s }));
-            }
+            var package = new ExcelDataReader(FilePath, SheetName);
+
+            return package.GetData().Select(s => new TestCaseParameters(new object[] { s }));
         }
     }
 }

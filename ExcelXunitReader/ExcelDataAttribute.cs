@@ -21,10 +21,10 @@ namespace ExcelXunitReader
 
         public override IEnumerable<dynamic[]> GetData(MethodInfo testMethod)
         {
-            using (var package = new ExcelDataReader(FilePath, SheetName))
-            {
-                return package.GetData().Select(s => new object[] { s });
-            }
+            var package = new ExcelDataReader(FilePath, SheetName);
+
+            return package.GetData().Select(s => new object[] { s });
+
         }
     }
 }
