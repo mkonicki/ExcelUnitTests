@@ -24,7 +24,6 @@ namespace ExcelXunitReader
             var package = new ExcelDataReader(FilePath, SheetName);
 
             return package.GetData().Select(s => new object[] { s });
-
         }
     }
 }

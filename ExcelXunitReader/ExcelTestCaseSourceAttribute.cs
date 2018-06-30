@@ -19,6 +19,7 @@ namespace ExcelReader
         {
             FilePath = filePath;
             SheetName = sheetName;
+            _builder = new NUnitTestCaseBuilder();
         }
 
         public IEnumerable<TestMethod> BuildFrom(IMethodInfo method, Test suite)
