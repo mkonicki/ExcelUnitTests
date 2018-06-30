@@ -16,7 +16,6 @@ namespace ExcelReader
         private readonly string SheetName;
         private readonly Type DataType;
 
-
         public ExcelTestCaseSourceAttribute(string filePath, string sheetName) : this(filePath, sheetName, null)
         {
 
@@ -27,6 +26,7 @@ namespace ExcelReader
             FilePath = filePath;
             SheetName = sheetName;
             DataType = dataType;
+
             _builder = new NUnitTestCaseBuilder();
         }
 
@@ -47,7 +47,8 @@ namespace ExcelReader
                 return package.GetData().Select(s => new TestCaseParameters(new object[] { s }));
             }
 
-            var getDataMethod = package.GetType().GetMethods().First(m => m.Name == "GetData" && m.IsGenericMethod);
+            var getDataMethod = package.GetType().GetMethods()
+                .First(m => m.Name == nameof(ExcelDataReader.GetData) && m.IsGenericMethod);
 
             var getData = getDataMethod.MakeGenericMethod(new Type[] { DataType });
 

@@ -11,7 +11,28 @@ namespace ExcelTest
 
         [Theory]
         [ExcelData("TestSample.xlsx", "CarInsurance")]
-        public void SampleExcelTest(dynamic testData)
+        public void SampleExcelTestDynamic(dynamic testData)
+        {
+            //ARRENGE
+            var testCase = new CarInsuranceDetailDto
+            {
+                Age = (int)testData.Age,
+                Brand = (CarBrand)testData.Brand,
+                EngineCapacity = (decimal)testData.EngineCapacity,
+                FuelType = (FuelType)testData.FuelType,
+                InsuranceType = (InsuranceType)testData.InsuranceType
+            };
+
+            //ACT
+            var insuranceCost = _calculationFactory.Calculate(testCase);
+
+            //ASSERT
+            Assert.Equal((decimal)testData.Result, insuranceCost);
+        }
+
+        [Theory]
+        [ExcelData("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]
+        public void SampleExcelTestStonglyTyped(CarInsuranceDetailTestCase testData)
         {
             //ARRENGE
             var testCase = new CarInsuranceDetailDto
