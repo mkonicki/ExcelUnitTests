@@ -5,7 +5,7 @@ Sample of usage DDT pattern with XUnit and NUnit libraries.
 ## What is it? 
  In this solution I want to provide sample how to use external files, to provide highest code quality, by preparing thousands of unit tests in one simple [XUnit](https://xunit.github.io/), or [NUnit](http://nunit.org/) test.
  In data attributes I used [EPPlus.Core](https://github.com/VahidN/EPPlus.Core) to read excel files! Thx a lot guys!
-That's my tutorial how I prepared my module to go life on production with minimal number of bugs only by creating one simple, easy and readable unit test. 
+That's my tutorial how I prepared my module to go life on production with minimal number of bugs, only with creating one simple, easy and readable unit test. 
 That's just my extension to XUnit and NUnit to provide more and better (yeah I know, how it looks like, but I'm not vegan, hipster with lumberjack beard).
 
 ## What do I get?  
