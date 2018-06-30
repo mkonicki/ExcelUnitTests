@@ -17,19 +17,26 @@ I created simple Data Source Providers to read from excel spreadsheet (CSV and D
 ### XUnit
  - [ExcelDataAttribute.cs](https://github.com/mkonicki/ExcelUnitTests/blob/master/ExcelXunitReader/ExcelDataAttribute.cs)
  
-	- dynamic 
+	- dynamic
+	
 		`[ExcelData("TestSample.xlsx", "CarInsurance")]`
 	
-	- strongly typed  
+	- strongly typed 
+	
 		` [ExcelData("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]`
 
 
 ### NUnit
  - [ExcelTestCaseSourceAttribute](https://github.com/mkonicki/ExcelUnitTests/blob/master/ExcelXunitReader/ExcelTestCaseSourceAttribute.cs)
- 		 - dynamic 
-		  ` [ExcelTestCaseSource("TestSample.xlsx", "CarInsurance")]`
-		 - strongly typed  
-		  `[ExcelTestCaseSource("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]`
+  
+	- dynamic
+	
+		`[ExcelTestCaseSource("TestSample.xlsx", "CarInsurance")]`
+	
+	- strongly typed 
+	
+		`[ExcelTestCaseSource("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]`
+
 
 ## Sample of usage
 
