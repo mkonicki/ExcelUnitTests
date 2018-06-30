@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelReader", "ExcelXunitRe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InsuranceModule", "InsuranceModule\InsuranceModule.csproj", "{BFF7E83A-026C-449A-A647-C82BCB3FC9DE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelNUnitTest", "ExcelMSTest\ExcelNUnitTest.csproj", "{9C75D843-8861-49A4-AC88-928968AAFE45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelNUnitTest", "ExcelNUnitTest\ExcelNUnitTest.csproj", "{9C75D843-8861-49A4-AC88-928968AAFE45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
