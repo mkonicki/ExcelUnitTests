@@ -14,7 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ExcelXunitReader\ExcelXunitReader.csproj" />
+    <ProjectReference Include="..\ExcelXunitReader\ExcelReader.csproj" />
+    <ProjectReference Include="..\InsuranceModule\InsuranceModule.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,20 +1,21 @@
-using ExcelXunitReader;
-using Xunit;
 
-namespace ExcelTest
+
+using ExcelReader;
+using ExcelTest;
+using NUnit.Framework;
+
+namespace ExcelMSTest
 {
-    public class CarInsuranceTests
+    [TestFixture]
+    public class ExcelTestSample
     {
         private readonly ICarInsuranceCalculationFactory _calculationFactory;
 
-        public CarInsuranceTests()
-        {
-            _calculationFactory = new CarInsuranceCalculationFactory();
-        }
+        public ExcelTestSample() => _calculationFactory = new CarInsuranceCalculationFactory();
 
-        [Theory]
-        [ExcelData("TestSample.xlsx", "CarInsurance")]
-        public void SampleExcelTest(dynamic testData)
+        [Test]
+        [ExcelTestCaseSource("TestSample.xlsx", "CarInsurance")]
+        public void InsuranceTest(dynamic testData)
         {
             //ARRENGE
             var testCase = new CarInsuranceDetailDto
@@ -30,7 +31,7 @@ namespace ExcelTest
             var insuranceCost = _calculationFactory.Calculate(testCase);
 
             //ASSERT
-            Assert.Equal((decimal)testData.Result, insuranceCost);
+            Assert.AreEqual((decimal)testData.Result, insuranceCost);
         }
     }
 }

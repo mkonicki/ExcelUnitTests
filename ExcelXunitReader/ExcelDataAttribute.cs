@@ -1,20 +1,22 @@
-﻿using OfficeOpenXml;
+﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
+using OfficeOpenXml;
 using Xunit.Sdk;
-using System.Linq;
-using System.Dynamic;
 
 namespace ExcelXunitReader
 {
-    public class ExcelProviderAttribute : DataAttribute
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    public class ExcelDataAttribute : DataAttribute
     {
         private readonly string FilePath;
         private readonly string SheetName;
 
-        public ExcelProviderAttribute(string filePath, string sheetName)
+        public ExcelDataAttribute(string filePath, string sheetName)
         {
             FilePath = $"{Directory.GetCurrentDirectory()}\\{filePath}";
             SheetName = sheetName;
@@ -40,8 +42,8 @@ namespace ExcelXunitReader
                     {
                         var labelCell = sheet.Cells[1, j];
                         var key = labelCell.Value.ToString();
-                        expandoDic.Add(new KeyValuePair<string, object> (key, sheet.Cells[i, j].Value));                        
-                    }                   
+                        expandoDic.Add(new KeyValuePair<string, object>(key, sheet.Cells[i, j].Value));
+                    }
 
                     yield return new object[] { (dynamic)eo };
                 }
