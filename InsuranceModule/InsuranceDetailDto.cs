@@ -14,6 +14,11 @@
         }
     }
 
+    public class CarInsuranceDetailTestCase : CarInsuranceDetailDto
+    {
+        public decimal Result { get; set; }
+    }
+
     public enum CarBrand
     {
         Volvo = 1,

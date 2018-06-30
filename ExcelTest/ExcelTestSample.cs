@@ -7,10 +7,7 @@ namespace ExcelTest
     {
         private readonly ICarInsuranceCalculationFactory _calculationFactory;
 
-        public CarInsuranceTests()
-        {
-            _calculationFactory = new CarInsuranceCalculationFactory();
-        }
+        public CarInsuranceTests() => _calculationFactory = new CarInsuranceCalculationFactory();
 
         [Theory]
         [ExcelData("TestSample.xlsx", "CarInsurance")]
@@ -19,18 +16,18 @@ namespace ExcelTest
             //ARRENGE
             var testCase = new CarInsuranceDetailDto
             {
-                Age = (int)testData.Age,
-                Brand = (CarBrand)testData.Brand,
-                EngineCapacity = (decimal)testData.EngineCapacity,
-                FuelType = (FuelType)testData.FuelType,
-                InsuranceType = (InsuranceType)testData.InsuranceType
+                Age = testData.Age,
+                Brand = testData.Brand,
+                EngineCapacity = testData.EngineCapacity,
+                FuelType = testData.FuelType,
+                InsuranceType = testData.InsuranceType
             };
 
             //ACT
             var insuranceCost = _calculationFactory.Calculate(testCase);
 
             //ASSERT
-            Assert.Equal((decimal)testData.Result, insuranceCost);
+            Assert.Equal(testData.Result, insuranceCost);
         }
     }
 }
