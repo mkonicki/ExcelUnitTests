@@ -1,4 +1,5 @@
 
+
 # DDT(Data-Driven Testing) is alive!  
 Sample of usage DDT pattern with XUnit and NUnit libraries.
 
@@ -12,12 +13,21 @@ That's just my extension to XUnit and NUnit to provide more and better (yeah I k
 Nothing special just an idea, how to minimalize stress and hot fixes after relase.
 
 ## How is it done?  
-I created simple Data Source Providers to read from excel spreadsheet (CSV and DB providers are during implementation).
+I created simple Data Source Providers to read from excel spreadsheet (CSV and DB providers are during implementation). Each attributes has 2 types of usage, dynamic, where simple test case is provided to method as dynamic object, or strongly typed where we provide type as parameter in attribute.
 ### XUnit
  - [ExcelDataAttribute.cs](https://github.com/mkonicki/ExcelUnitTests/blob/master/ExcelXunitReader/ExcelDataAttribute.cs)
+		 - dynamic 
+		  `[ExcelData("TestSample.xlsx", "CarInsurance")]`
+		 - strongly typed  
+		  ` [ExcelData("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]`
+
 
 ### NUnit
  - [ExcelTestCaseSourceAttribute](https://github.com/mkonicki/ExcelUnitTests/blob/master/ExcelXunitReader/ExcelTestCaseSourceAttribute.cs)
+ 		 - dynamic 
+		  ` [ExcelTestCaseSource("TestSample.xlsx", "CarInsurance")]`
+		 - strongly typed  
+		  `[ExcelTestCaseSource("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]`
 
 ## Sample of usage
 
