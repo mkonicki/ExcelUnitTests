@@ -26,25 +26,25 @@ To present how use attributes, and DDT pattern in practice, I created simple fac
 ### XUnit
 
     [Theory]
-       [ExcelData("TestSample.xlsx", "CarInsurance")]
-       public void SampleExcelTest(dynamic testData)
-       {
-           //ARRENGE
-           var testCase = new CarInsuranceDetailDto
-           {
-               Age = (int)testData.Age,
-               Brand = (CarBrand)testData.Brand,
-               EngineCapacity = (decimal)testData.EngineCapacity,
-               FuelType = (FuelType)testData.FuelType,
-               InsuranceType = (InsuranceType)testData.InsuranceType
-           };
-     
-           //ACT
-           var insuranceCost = _calculationFactory.Calculate(testCase);
-     
-           //ASSERT
-           Assert.Equal((decimal)testData.Result, insuranceCost);
-       }
+    [ExcelData("TestSample.xlsx", "CarInsurance")]
+    public void SampleExcelTest(dynamic testData)
+    {
+        //ARRENGE
+        var testCase = new CarInsuranceDetailDto
+        {
+            Age = (int)testData.Age,
+            Brand = (CarBrand)testData.Brand,
+            EngineCapacity = (decimal)testData.EngineCapacity,
+            FuelType = (FuelType)testData.FuelType,
+            InsuranceType = (InsuranceType)testData.InsuranceType
+        };
+    
+        //ACT
+        var insuranceCost = _calculationFactory.Calculate(testCase);
+    
+        //ASSERT
+        Assert.Equal((decimal)testData.Result, insuranceCost);
+    }
 
 
 ### NUnit
