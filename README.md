@@ -17,11 +17,11 @@ I created simple Data Source Providers to read from excel spreadsheet (CSV and D
 ### XUnit
  - [ExcelDataAttribute.cs](https://github.com/mkonicki/ExcelUnitTests/blob/master/ExcelXunitReader/ExcelDataAttribute.cs)
  
-		 - dynamic 
-		  `[ExcelData("TestSample.xlsx", "CarInsurance")]`
-		  
-		 - strongly typed  
-		  ` [ExcelData("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]`
+	- dynamic 
+		`[ExcelData("TestSample.xlsx", "CarInsurance")]`
+	
+	- strongly typed  
+		` [ExcelData("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]`
 
 
 ### NUnit
