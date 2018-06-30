@@ -1,5 +1,3 @@
-
-
 using ExcelReader;
 using ExcelTest;
 using NUnit.Framework;
@@ -32,6 +30,27 @@ namespace ExcelMSTest
 
             //ASSERT
             Assert.AreEqual((decimal)testData.Result, insuranceCost);
+        }
+
+        [Test]
+        [ExcelTestCaseSource("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]
+        public void InsuranceTest(CarInsuranceDetailTestCase testData)
+        {
+            //ARRENGE
+            var testCase = new CarInsuranceDetailDto
+            {
+                Age = testData.Age,
+                Brand = testData.Brand,
+                EngineCapacity = testData.EngineCapacity,
+                FuelType = testData.FuelType,
+                InsuranceType = testData.InsuranceType
+            };
+
+            //ACT
+            var insuranceCost = _calculationFactory.Calculate(testCase);
+
+            //ASSERT
+            Assert.AreEqual(testData.Result, insuranceCost);
         }
     }
 }

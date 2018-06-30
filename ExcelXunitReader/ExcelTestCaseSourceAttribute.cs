@@ -14,11 +14,19 @@ namespace ExcelReader
         private readonly NUnitTestCaseBuilder _builder;
         private readonly string FilePath;
         private readonly string SheetName;
+        private readonly Type DataType;
 
-        public ExcelTestCaseSourceAttribute(string filePath, string sheetName)
+        public ExcelTestCaseSourceAttribute(string filePath, string sheetName) : this(filePath, sheetName, null)
+        {
+
+        }
+
+        public ExcelTestCaseSourceAttribute(string filePath, string sheetName, Type dataType)
         {
             FilePath = filePath;
             SheetName = sheetName;
+            DataType = dataType;
+
             _builder = new NUnitTestCaseBuilder();
         }
 
@@ -34,7 +42,17 @@ namespace ExcelReader
         {
             var package = new ExcelDataReader(FilePath, SheetName);
 
-            return package.GetData().Select(s => new TestCaseParameters(new object[] { s }));
+            if (DataType == null)
+            {
+                return package.GetData().Select(s => new TestCaseParameters(new object[] { s }));
+            }
+
+            var getDataMethod = package.GetType().GetMethods()
+                .First(m => m.Name == nameof(ExcelDataReader.GetData) && m.IsGenericMethod);
+
+            var getData = getDataMethod.MakeGenericMethod(new Type[] { DataType });
+
+            return ((IEnumerable<object>)getData.Invoke(package, null)).Select(s => new TestCaseParameters(new object[] { s }));
         }
     }
 }
