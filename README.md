@@ -16,8 +16,10 @@ Nothing special just an idea, how to minimalize stress and hot fixes after relas
 I created simple Data Source Providers to read from excel spreadsheet (CSV and DB providers are during implementation). Each attributes has 2 types of usage, dynamic, where simple test case is provided to method as dynamic object, or strongly typed where we provide type as parameter in attribute.
 ### XUnit
  - [ExcelDataAttribute.cs](https://github.com/mkonicki/ExcelUnitTests/blob/master/ExcelXunitReader/ExcelDataAttribute.cs)
+ 
 		 - dynamic 
 		  `[ExcelData("TestSample.xlsx", "CarInsurance")]`
+		  
 		 - strongly typed  
 		  ` [ExcelData("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]`
 
