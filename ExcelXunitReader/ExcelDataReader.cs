@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using OfficeOpenXml;
 
@@ -13,6 +12,9 @@ namespace ExcelReader
     {
         private readonly string FilePath;
         private readonly string SheetName;
+        private const int FirstDataRow = 2;
+        private const int LabelDataRow = 1;
+
         public ExcelDataReader(string filePath, string sheetName)
         {
             FilePath = $"{Directory.GetCurrentDirectory()}\\{filePath}";
@@ -21,73 +23,46 @@ namespace ExcelReader
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
-        public IEnumerable<dynamic> GetData()
+        public IEnumerable<dynamic> GetData() =>
+            GetData<dynamic>(() => new ExpandoObject(), (tc, k, v) =>
+            {
+                var testDataAsDictionary = (ICollection<KeyValuePair<string, object>>)tc;
+                testDataAsDictionary.Add(new KeyValuePair<string, object>(k, v));
+            });
+
+
+        public IEnumerable<T> GetData<T>() =>
+            GetData(() => Activator.CreateInstance<T>(), (tc, k, v) => tc.SetCastedValue(k, v));
+
+
+        private IEnumerable<T> GetData<T>(Func<T> initializeTestDataObject,
+            Action<T, string, object> setupPropertyValue)
         {
             using (var excelPackage = new ExcelPackage(new FileInfo(FilePath)))
             {
+
                 var worksheets = excelPackage.Workbook.Worksheets;
                 var sheet = worksheets.ToList().First(s => s.Name == SheetName);
 
-
-                for (int i = 2; i <= sheet.Dimension.End.Row; i++)
-                {
-                    var eo = new ExpandoObject();
-                    var expandoDic = (ICollection<KeyValuePair<string, object>>)eo;
-                    var excelrow = sheet.Row(i);
-
-                    for (int j = 1; j <= sheet.Dimension.End.Column; j++)
-                    {
-                        var labelCell = sheet.Cells[1, j];
-                        var key = labelCell.Value.ToString();
-                        expandoDic.Add(new KeyValuePair<string, object>(key, sheet.Cells[i, j].Value));
-                    }
-
-                    yield return (dynamic)eo;
-                }
-            }
-        }
-
-        public IEnumerable<T> GetData<T>()
-        {
-            using (var excelPackage = new ExcelPackage(new FileInfo(FilePath)))
-            {
-                var dataType = typeof(T);
-                var worksheets = excelPackage.Workbook.Worksheets;
-                var sheet = worksheets.ToList().First(s => s.Name == SheetName);
-
-                for (int i = 2; i <= sheet.Dimension.End.Row; i++)
+                for (int i = FirstDataRow; i <= sheet.Dimension.End.Row; i++)
                 {
                     var excelrow = sheet.Row(i);
 
-                    var testData = (T)Activator.CreateInstance(dataType);
+                    var testCase = initializeTestDataObject.Invoke();
 
-                    for (int j = 1; j <= sheet.Dimension.End.Column; j++)
+                    for (int j = LabelDataRow; j <= sheet.Dimension.End.Column; j++)
                     {
-                        var labelCell = sheet.Cells[1, j];
+                        var labelCell = sheet.Cells[LabelDataRow, j];
                         var key = labelCell.Value.ToString();
                         var value = sheet.Cells[i, j].Value;
 
-                        var property = dataType.GetProperties().First(s => s.Name == key);
-                        var propertyValue = CastPropertyValue(property, value);
-
-                        property.SetValue(testData, propertyValue);
+                        setupPropertyValue.Invoke(testCase, key, value);
                     }
 
-                    yield return testData;
+                    yield return testCase;
                 }
             }
         }
 
-        private object CastPropertyValue(PropertyInfo property, object value)
-        {
-            if (property.PropertyType.IsEnum)
-            {
-                var enumType = property.PropertyType;
-
-                return Enum.Parse(enumType, value.ToString());
-            }
-
-            return Convert.ChangeType(value, property.PropertyType);
-        }
     }
 }
