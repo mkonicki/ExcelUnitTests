@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ExcelTest
+namespace InsuranceModule
 {
     public class CarInsuranceCalculationFactory : ICarInsuranceCalculationFactory
     {

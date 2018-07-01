@@ -30,11 +30,9 @@ namespace ExcelReader
                 testDataAsDictionary.Add(new KeyValuePair<string, object>(k, v));
             });
 
-
         public IEnumerable<T> GetData<T>() =>
             GetData(() => Activator.CreateInstance<T>(), (tc, k, v) => tc.SetCastedValue(k, v));
-
-
+        
         private IEnumerable<T> GetData<T>(Func<T> initializeTestDataObject,
             Action<T, string, object> setupPropertyValue)
         {
@@ -63,6 +61,5 @@ namespace ExcelReader
                 }
             }
         }
-
     }
 }

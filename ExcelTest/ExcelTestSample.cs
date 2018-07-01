@@ -1,4 +1,5 @@
 using ExcelXunitReader;
+using InsuranceModule;
 using Xunit;
 
 namespace ExcelTest

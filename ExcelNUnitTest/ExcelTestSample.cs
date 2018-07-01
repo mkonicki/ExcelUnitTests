@@ -1,5 +1,5 @@
 using ExcelReader;
-using ExcelTest;
+using InsuranceModule;
 using NUnit.Framework;
 
 namespace ExcelMSTest

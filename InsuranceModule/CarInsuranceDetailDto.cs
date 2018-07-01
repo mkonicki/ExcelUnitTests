@@ -1,4 +1,4 @@
-﻿namespace ExcelTest
+﻿namespace InsuranceModule
 {
     public class CarInsuranceDetailDto
     {
@@ -12,11 +12,6 @@
         {
             return $"{Age}, {Brand}, {FuelType}, {EngineCapacity}, {InsuranceType}";
         }
-    }
-
-    public class CarInsuranceDetailTestCase : CarInsuranceDetailDto
-    {
-        public decimal Result { get; set; }
     }
 
     public enum CarBrand

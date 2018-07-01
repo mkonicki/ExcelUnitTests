@@ -27,7 +27,7 @@ namespace ExcelXunitReader
             DataType = dataType;
         }
 
-        public override IEnumerable<dynamic[]> GetData(MethodInfo testMethod)
+        public override IEnumerable<object[]> GetData(MethodInfo testMethod)
         {
             var package = new ExcelDataReader(FilePath, SheetName);
 
