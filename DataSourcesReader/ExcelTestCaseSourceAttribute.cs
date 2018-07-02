@@ -6,7 +6,7 @@ using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
 using NUnit.Framework.Internal.Builders;
 
-namespace ExcelReader
+namespace DataSourcesReaders
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
     public class ExcelTestCaseSourceAttribute : NUnitAttribute, ITestBuilder, IImplyFixture

@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ExcelReader;
 using Xunit.Sdk;
 
-namespace ExcelXunitReader
+namespace DataSourcesReaders
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class ExcelDataAttribute : DataAttribute

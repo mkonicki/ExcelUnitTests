@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using OfficeOpenXml;
 
-namespace ExcelReader
+namespace DataSourcesReaders
 {
     public class ExcelDataReader
     {
@@ -32,7 +32,7 @@ namespace ExcelReader
 
         public IEnumerable<T> GetData<T>() =>
             GetData(() => Activator.CreateInstance<T>(), (tc, k, v) => tc.SetCastedValue(k, v));
-        
+
         private IEnumerable<T> GetData<T>(Func<T> initializeTestDataObject,
             Action<T, string, object> setupPropertyValue)
         {

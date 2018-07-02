@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace ExcelReader
+namespace DataSourcesReaders
 {
     public static class PropertyInfoHelper
     {

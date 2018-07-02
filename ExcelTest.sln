@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelXunitTest", "ExcelTest\ExcelXunitTest.csproj", "{46A184CD-5159-4B7A-993B-C588A5910678}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelReader", "ExcelXunitReader\ExcelReader.csproj", "{E3B87E3E-802D-45B1-9DFB-F07FE7A97029}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataSourcesReaders", "DataSourcesReader\DataSourcesReaders.csproj", "{E3B87E3E-802D-45B1-9DFB-F07FE7A97029}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InsuranceModule", "InsuranceModule\InsuranceModule.csproj", "{BFF7E83A-026C-449A-A647-C82BCB3FC9DE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelNUnitTest", "ExcelNUnitTest\ExcelNUnitTest.csproj", "{9C75D843-8861-49A4-AC88-928968AAFE45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitTest", "NUnitTest\NUnitTest.csproj", "{D5CC7451-CE62-440D-AD60-6B31180595FC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XunitTest", "XUnitTest\XunitTest.csproj", "{581CEFD8-2CD4-45D0-A3C6-66798EA29CF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{46A184CD-5159-4B7A-993B-C588A5910678}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{46A184CD-5159-4B7A-993B-C588A5910678}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{46A184CD-5159-4B7A-993B-C588A5910678}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{46A184CD-5159-4B7A-993B-C588A5910678}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E3B87E3E-802D-45B1-9DFB-F07FE7A97029}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E3B87E3E-802D-45B1-9DFB-F07FE7A97029}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3B87E3E-802D-45B1-9DFB-F07FE7A97029}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -29,10 +25,14 @@ Global
 		{BFF7E83A-026C-449A-A647-C82BCB3FC9DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFF7E83A-026C-449A-A647-C82BCB3FC9DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFF7E83A-026C-449A-A647-C82BCB3FC9DE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9C75D843-8861-49A4-AC88-928968AAFE45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C75D843-8861-49A4-AC88-928968AAFE45}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C75D843-8861-49A4-AC88-928968AAFE45}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C75D843-8861-49A4-AC88-928968AAFE45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5CC7451-CE62-440D-AD60-6B31180595FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5CC7451-CE62-440D-AD60-6B31180595FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5CC7451-CE62-440D-AD60-6B31180595FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5CC7451-CE62-440D-AD60-6B31180595FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{581CEFD8-2CD4-45D0-A3C6-66798EA29CF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{581CEFD8-2CD4-45D0-A3C6-66798EA29CF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{581CEFD8-2CD4-45D0-A3C6-66798EA29CF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{581CEFD8-2CD4-45D0-A3C6-66798EA29CF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

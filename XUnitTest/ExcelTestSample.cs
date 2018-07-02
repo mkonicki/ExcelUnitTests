@@ -1,4 +1,4 @@
-using ExcelXunitReader;
+using DataSourcesReaders;
 using InsuranceModule;
 using Xunit;
 

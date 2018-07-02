@@ -1,4 +1,4 @@
-using ExcelReader;
+using DataSourcesReaders;
 using InsuranceModule;
 using NUnit.Framework;
 
