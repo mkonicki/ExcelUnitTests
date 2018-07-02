@@ -6,7 +6,7 @@ using Xunit.Sdk;
 
 namespace DataSourcesReaders
 {
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public class ExcelDataAttribute : DataAttribute
     {
         private readonly string FilePath;
@@ -28,7 +28,7 @@ namespace DataSourcesReaders
 
         public override IEnumerable<object[]> GetData(MethodInfo testMethod)
         {
-            var package = new ExcelDataReader(FilePath, SheetName);
+            var package = new ExcelTestCaseReader(FilePath, SheetName);
 
             if (DataType == null)
             {
@@ -36,7 +36,7 @@ namespace DataSourcesReaders
             }
 
             var genericGetDataMethod = package.GetType().GetMethods()
-                .First(m => m.Name == nameof(ExcelDataReader.GetData) && m.IsGenericMethod);
+                .First(m => m.Name == nameof(ExcelTestCaseReader.GetData) && m.IsGenericMethod);
 
             var getDataMethod = genericGetDataMethod.MakeGenericMethod(new Type[] { DataType });
 

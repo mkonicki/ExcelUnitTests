@@ -2,7 +2,7 @@ using DataSourcesReaders;
 using InsuranceModule;
 using NUnit.Framework;
 
-namespace ExcelMSTest
+namespace NUnitTest
 {
     [TestFixture]
     public class ExcelTestSample

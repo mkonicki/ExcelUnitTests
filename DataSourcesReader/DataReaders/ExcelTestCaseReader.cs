@@ -8,14 +8,14 @@ using OfficeOpenXml;
 
 namespace DataSourcesReaders
 {
-    public class ExcelDataReader
+    public class ExcelTestCaseReader : ITestCaseReader
     {
         private readonly string FilePath;
         private readonly string SheetName;
         private const int FirstDataRow = 2;
         private const int LabelDataRow = 1;
 
-        public ExcelDataReader(string filePath, string sheetName)
+        public ExcelTestCaseReader(string filePath, string sheetName)
         {
             FilePath = $"{Directory.GetCurrentDirectory()}\\{filePath}";
             SheetName = sheetName;
@@ -30,7 +30,7 @@ namespace DataSourcesReaders
                 testDataAsDictionary.Add(new KeyValuePair<string, object>(k, v));
             });
 
-        public IEnumerable<T> GetData<T>() =>
+        public IEnumerable<T> GetData<T>() where T : new() =>
             GetData(() => Activator.CreateInstance<T>(), (tc, k, v) => tc.SetCastedValue(k, v));
 
         private IEnumerable<T> GetData<T>(Func<T> initializeTestDataObject,
@@ -44,8 +44,6 @@ namespace DataSourcesReaders
 
                 for (int i = FirstDataRow; i <= sheet.Dimension.End.Row; i++)
                 {
-                    var excelrow = sheet.Row(i);
-
                     var testCase = initializeTestDataObject.Invoke();
 
                     for (int j = LabelDataRow; j <= sheet.Dimension.End.Column; j++)

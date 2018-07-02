@@ -8,51 +8,46 @@ using NUnit.Framework.Internal.Builders;
 
 namespace DataSourcesReaders
 {
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public class ExcelTestCaseSourceAttribute : NUnitAttribute, ITestBuilder, IImplyFixture
     {
+        private readonly ITestCaseReader _testCaseReader;
         private readonly NUnitTestCaseBuilder _builder;
-        private readonly string FilePath;
-        private readonly string SheetName;
         private readonly Type DataType;
 
         public ExcelTestCaseSourceAttribute(string filePath, string sheetName) : this(filePath, sheetName, null)
         {
-
         }
 
         public ExcelTestCaseSourceAttribute(string filePath, string sheetName, Type dataType)
         {
-            FilePath = filePath;
-            SheetName = sheetName;
             DataType = dataType;
 
+            _testCaseReader = new ExcelTestCaseReader(filePath, sheetName);
             _builder = new NUnitTestCaseBuilder();
         }
 
         public IEnumerable<TestMethod> BuildFrom(IMethodInfo method, Test suite)
         {
-            foreach (TestCaseParameters parms in GetTestCasesFor(method))
+            foreach (TestCaseParameters testCases in GetTestCasesFor(method))
             {
-                yield return _builder.BuildTestMethod(method, suite, parms);
+                yield return _builder.BuildTestMethod(method, suite, testCases);
             }
         }
 
         private IEnumerable<TestCaseParameters> GetTestCasesFor(IMethodInfo method)
         {
-            var package = new ExcelDataReader(FilePath, SheetName);
-
             if (DataType == null)
             {
-                return package.GetData().Select(s => new TestCaseParameters(new object[] { s }));
+                return _testCaseReader.GetData().Select(s => new TestCaseParameters(new[] { s }));
             }
 
-            var getDataMethod = package.GetType().GetMethods()
-                .First(m => m.Name == nameof(ExcelDataReader.GetData) && m.IsGenericMethod);
+            var getDataMethod = _testCaseReader.GetType().GetMethods()
+                .First(m => m.Name == nameof(ExcelTestCaseReader.GetData) && m.IsGenericMethod);
 
-            var getData = getDataMethod.MakeGenericMethod(new Type[] { DataType });
+            var getData = getDataMethod.MakeGenericMethod(DataType);
 
-            return ((IEnumerable<object>)getData.Invoke(package, null)).Select(s => new TestCaseParameters(new object[] { s }));
+            return ((IEnumerable<TestCaseParameters>)getData.Invoke(_testCaseReader, null)).Select(s => new TestCaseParameters(new[] { s }));
         }
     }
 }
