@@ -1,18 +1,17 @@
-using DataSourcesReaders;
+﻿using DataSourcesReaders.XUnitAttributes;
 using InsuranceModule;
-using NUnit.Framework;
+using Xunit;
 
-namespace NUnitTest
+namespace ExcelTest
 {
-    [TestFixture]
-    public class ExcelTestSample
+    public class DbTestSample
     {
         private readonly ICarInsuranceCalculationFactory _calculationFactory =
             new CarInsuranceCalculationFactory();
 
-        [Test]
-        [ExcelTestCaseSource("TestSample.xlsx", "CarInsurance")]
-        public void InsuranceTest(dynamic testData)
+        [Theory]
+        [DbData("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases")]
+        public void SampleExcelTestDynamic(dynamic testData)
         {
             //ARRENGE
             var testCase = new CarInsuranceDetailDto
@@ -28,12 +27,12 @@ namespace NUnitTest
             var insuranceCost = _calculationFactory.Calculate(testCase);
 
             //ASSERT
-            Assert.AreEqual((decimal)testData.Result, insuranceCost);
+            Assert.Equal((decimal)testData.Result, insuranceCost);
         }
 
-        [Test]
-        [ExcelTestCaseSource("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]
-        public void InsuranceTest(CarInsuranceDetailTestCase testData)
+        [Theory]
+        [DbData("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases", typeof(CarInsuranceDetailTestCase))]
+        public void SampleExcelTestStonglyTyped(CarInsuranceDetailTestCase testData)
         {
             //ARRENGE
             var testCase = new CarInsuranceDetailDto
@@ -49,7 +48,7 @@ namespace NUnitTest
             var insuranceCost = _calculationFactory.Calculate(testCase);
 
             //ASSERT
-            Assert.AreEqual(testData.Result, insuranceCost);
+            Assert.Equal(testData.Result, insuranceCost);
         }
     }
 }

@@ -5,7 +5,7 @@ using NUnit.Framework.Internal;
 
 namespace DataSourcesReaders.NUnitAttributes
 {
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public class DbTestCaseSourceAttribute : BaseDataSourceAttribute
     {
         public DbTestCaseSourceAttribute(string connectionString, string tableName) :
@@ -20,9 +20,9 @@ namespace DataSourcesReaders.NUnitAttributes
 
         public override IEnumerable<TestMethod> BuildFrom(IMethodInfo method, Test suite)
         {
-            foreach (TestCaseParameters parms in GetTestCasesFor(method))
+            foreach (var parms in GetTestCases())
             {
-                yield return _builder.BuildTestMethod(method, suite, parms);
+                yield return Builder.BuildTestMethod(method, suite, parms);
             }
         }
     }

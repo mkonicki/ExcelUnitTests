@@ -9,8 +9,6 @@ namespace DataSourcesReaders
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public class ExcelTestCaseSourceAttribute : BaseDataSourceAttribute
     {
-
-
         public ExcelTestCaseSourceAttribute(string filePath, string sheetName)
             : this(filePath, sheetName, null)
         {
@@ -23,9 +21,9 @@ namespace DataSourcesReaders
 
         public override IEnumerable<TestMethod> BuildFrom(IMethodInfo method, Test suite)
         {
-            foreach (TestCaseParameters testCases in GetTestCasesFor(method))
+            foreach (var testCases in GetTestCases())
             {
-                yield return _builder.BuildTestMethod(method, suite, testCases);
+                yield return Builder.BuildTestMethod(method, suite, testCases);
             }
         }
     }

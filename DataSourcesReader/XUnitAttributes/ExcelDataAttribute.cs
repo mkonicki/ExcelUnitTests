@@ -1,46 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using Xunit.Sdk;
+using DataSourcesReaders.XUnitAttributes;
 
 namespace DataSourcesReaders
 {
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-    public class ExcelDataAttribute : DataAttribute
+    public class ExcelDataAttribute : BaseDataAttribute
     {
-        private readonly string FilePath;
-        private readonly string SheetName;
-        private readonly Type DataType;
-
         public ExcelDataAttribute(string filePath, string sheetName) : this(filePath, sheetName, null)
         {
-            FilePath = filePath;
-            SheetName = sheetName;
         }
 
         public ExcelDataAttribute(string filePath, string sheetName, Type dataType)
+            : base(new ExcelTestCaseReader(filePath, sheetName), dataType)
         {
-            FilePath = filePath;
-            SheetName = sheetName;
-            DataType = dataType;
         }
 
         public override IEnumerable<object[]> GetData(MethodInfo testMethod)
         {
-            var package = new ExcelTestCaseReader(FilePath, SheetName);
-
-            if (DataType == null)
-            {
-                return package.GetData().Select(s => new object[] { s });
-            }
-
-            var genericGetDataMethod = package.GetType().GetMethods()
-                .First(m => m.Name == nameof(ExcelTestCaseReader.GetData) && m.IsGenericMethod);
-
-            var getDataMethod = genericGetDataMethod.MakeGenericMethod(new Type[] { DataType });
-
-            return ((IEnumerable<object>)getDataMethod.Invoke(package, null)).Select(s => new object[] { s });
+            return GetTestCases();
         }
     }
 }

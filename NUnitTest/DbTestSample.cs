@@ -6,9 +6,8 @@ namespace NUnitTest
 {
     public class DbTestSample
     {
-        private readonly ICarInsuranceCalculationFactory _calculationFactory;
-
-        public DbTestSample() => _calculationFactory = new CarInsuranceCalculationFactory();
+        private readonly ICarInsuranceCalculationFactory _calculationFactory =
+            new CarInsuranceCalculationFactory();
 
         [Test]
         [DbTestCaseSource("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases")]
