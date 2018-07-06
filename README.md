@@ -1,5 +1,3 @@
-
-
 # DDT(Data-Driven Testing) is alive!  
 Sample of usage DDT pattern with XUnit and NUnit libraries.
 
@@ -13,29 +11,33 @@ That's just my extension to XUnit and NUnit to provide more and better (yeah I k
 Nothing special just an idea, how to minimalize stress and hot fixes after relase.
 
 ## How is it done?  
-I created simple Data Source Providers to read from excel spreadsheet (CSV and DB providers are during implementation). Each attributes has 2 types of usage, dynamic, where simple test case is provided to method as dynamic object, or strongly typed where we provide type as parameter in attribute.
+I created simple Data Source Providers to read from mssql database, or excel spreadsheet (CSV provider, and another database providers are during implementation). Each attributes has 2 cases of usage, dynamic, where simple test case is provided to method as dynamic object, or strongly typed where we provide type as parameter in attribute.
 ### XUnit
- - [ExcelDataAttribute.cs](https://github.com/mkonicki/ExcelUnitTests/blob/master/ExcelXunitReader/ExcelDataAttribute.cs)
+ - [DbDataAttribute.cs](https://github.com/mkonicki/DDT-Unit-Tests/blob/master/DataSourcesReader/XUnitAttributes/DbDataAttribute.cs)
  
-	- dynamic
+	- dynamic `[DbData("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases")]`
 	
-		`[ExcelData("TestSample.xlsx", "CarInsurance")]`
+	- strongly typed  `[DbData("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases", typeof(CarInsuranceDetailTestCase))]`
 	
-	- strongly typed 
+ - [ExcelDataAttribute.cs](https://github.com/mkonicki/DDT-Unit-Tests/blob/master/DataSourcesReader/XUnitAttributes/ExcelDataAttribute.cs)
+ 
+	- dynamic `[ExcelData("TestSample.xlsx", "CarInsurance")]`
 	
-		` [ExcelData("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]`
+	- strongly typed  ` [ExcelData("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]`
 
 
 ### NUnit
- - [ExcelTestCaseSourceAttribute](https://github.com/mkonicki/ExcelUnitTests/blob/master/ExcelXunitReader/ExcelTestCaseSourceAttribute.cs)
+ - [DbTestCaseSourceAttribute](https://github.com/mkonicki/DDT-Unit-Tests/blob/master/DataSourcesReader/NUnitAttributes/DbTestCaseSourceAttribute.cs)
   
-	- dynamic
+	- dynamic -  `[DbTestCaseSource("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases")]`
 	
-		`[ExcelTestCaseSource("TestSample.xlsx", "CarInsurance")]`
+	- strongly typed - 	`[DbTestCaseSource("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases", typeof(CarInsuranceDetailTestCase))]`
+
+ - [ExcelTestCaseSourceAttribute](https://github.com/mkonicki/DDT-Unit-Tests/blob/master/DataSourcesReader/NUnitAttributes/ExcelTestCaseSourceAttribute.cs)
+  
+	- dynamic -  `[ExcelTestCaseSource("TestSample.xlsx", "CarInsurance")]`
 	
-	- strongly typed 
-	
-		`[ExcelTestCaseSource("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]`
+	- strongly typed - 	`[ExcelTestCaseSource("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]`
 
 
 ## Sample of usage

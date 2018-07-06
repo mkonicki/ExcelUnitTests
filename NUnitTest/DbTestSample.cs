@@ -1,17 +1,16 @@
-using DataSourcesReaders;
+﻿using DataSourcesReaders.NUnitAttributes;
 using InsuranceModule;
 using NUnit.Framework;
 
 namespace NUnitTest
 {
-    [TestFixture]
-    public class ExcelTestSample
+    public class DbTestSample
     {
         private readonly ICarInsuranceCalculationFactory _calculationFactory =
             new CarInsuranceCalculationFactory();
 
         [Test]
-        [ExcelTestCaseSource("TestSample.xlsx", "CarInsurance")]
+        [DbTestCaseSource("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases")]
         public void InsuranceTest(dynamic testData)
         {
             //ARRENGE
@@ -32,8 +31,8 @@ namespace NUnitTest
         }
 
         [Test]
-        [ExcelTestCaseSource("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]
-        public void InsuranceTest(CarInsuranceDetailTestCase testData)
+        [DbTestCaseSource("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases", typeof(CarInsuranceDetailTestCase))]
+        public void InsuranceTestStronglyTyped(CarInsuranceDetailTestCase testData)
         {
             //ARRENGE
             var testCase = new CarInsuranceDetailDto

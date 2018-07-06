@@ -4,11 +4,10 @@ using Xunit;
 
 namespace ExcelTest
 {
-    public class CarInsuranceTests
+    public class ExcelTestSample
     {
-        private readonly ICarInsuranceCalculationFactory _calculationFactory;
-
-        public CarInsuranceTests() => _calculationFactory = new CarInsuranceCalculationFactory();
+        private readonly ICarInsuranceCalculationFactory _calculationFactory =
+            new CarInsuranceCalculationFactory();
 
         [Theory]
         [ExcelData("TestSample.xlsx", "CarInsurance")]
