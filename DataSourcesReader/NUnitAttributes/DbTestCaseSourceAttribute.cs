@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using NUnit.Framework.Interfaces;
+﻿using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
+using System;
+using System.Collections.Generic;
 
 namespace DataSourcesReaders.NUnitAttributes
 {
@@ -9,18 +9,13 @@ namespace DataSourcesReaders.NUnitAttributes
     public class DbTestCaseSourceAttribute : BaseDataSourceAttribute
     {
         public DbTestCaseSourceAttribute(string connectionString, string tableName) :
-            this(connectionString, tableName, null)
-        {
-        }
-
-        public DbTestCaseSourceAttribute(string connectionString, string tableName, Type dataType) :
-            base(new DbDataReader(connectionString, tableName), dataType)
+            base(new DbTestCaseProvider(connectionString, tableName))
         {
         }
 
         public override IEnumerable<TestMethod> BuildFrom(IMethodInfo method, Test suite)
         {
-            foreach (var parms in GetTestCases())
+            foreach (var parms in GetTestCases(method))
             {
                 yield return Builder.BuildTestMethod(method, suite, parms);
             }

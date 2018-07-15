@@ -1,21 +1,22 @@
-﻿using System;
+﻿using DataSourcesReaders.Models;
+using OfficeOpenXml;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using OfficeOpenXml;
 
 namespace DataSourcesReaders
 {
-    public class ExcelTestCaseReader : ITestCaseReader
+    public class ExcelTestCaseProvider : ITestCaseProvider
     {
         private readonly string FilePath;
         private readonly string SheetName;
         private const int FirstDataRow = 2;
         private const int LabelDataRow = 1;
 
-        public ExcelTestCaseReader(string filePath, string sheetName)
+        public ExcelTestCaseProvider(string filePath, string sheetName)
         {
             FilePath = $"{Directory.GetCurrentDirectory()}\\{filePath}";
             SheetName = sheetName;
@@ -23,17 +24,24 @@ namespace DataSourcesReaders
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
-        public IEnumerable<dynamic> GetData() =>
-            GetData<dynamic>(() => new ExpandoObject(), (tc, k, v) =>
+        public IEnumerable<dynamic> Get() =>
+            GetGeneric<dynamic>(() => new ExpandoObject(), (tc, k, v) =>
             {
                 var testDataAsDictionary = (ICollection<KeyValuePair<string, object>>)tc;
                 testDataAsDictionary.Add(new KeyValuePair<string, object>(k, v));
             });
 
-        public IEnumerable<T> GetData<T>() where T : new() =>
-            GetData(() => Activator.CreateInstance<T>(), (tc, k, v) => tc.SetCastedValue(k, v));
+        public IEnumerable<TestCase<TCase, TResult>> GetTestCase<TCase, TResult>()
+            where TCase : new()
+            where TResult : new()
+            => GetGeneric(() => Activator.CreateInstance<TestCase<TCase, TResult>>(), (tc, k, v) => tc.SetCastedValue(k, v));
 
-        private IEnumerable<T> GetData<T>(Func<T> initializeTestDataObject,
+        public IEnumerable<T> Get<T>()
+        {
+            return GetGeneric(() => Activator.CreateInstance<T>(), (tc, k, v) => tc.SetCastedValue(k, v));
+        }
+
+        private IEnumerable<T> GetGeneric<T>(Func<T> initializeTestDataObject,
             Action<T, string, object> setupPropertyValue)
         {
             using (var excelPackage = new ExcelPackage(new FileInfo(FilePath)))

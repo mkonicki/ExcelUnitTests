@@ -31,7 +31,7 @@ namespace ExcelTest
         }
 
         [Theory]
-        [ExcelData("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]
+        [ExcelData("TestSample.xlsx", "CarInsurance")]
         public void SampleExcelTestStonglyTyped(CarInsuranceDetailTestCase testData)
         {
             //ARRENGE

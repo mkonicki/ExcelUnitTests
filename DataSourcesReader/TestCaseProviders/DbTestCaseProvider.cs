@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataSourcesReaders.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -6,30 +7,34 @@ using System.Dynamic;
 
 namespace DataSourcesReaders
 {
-    public class DbDataReader : ITestCaseReader
+    public class DbTestCaseProvider : ITestCaseProvider
     {
         private readonly string ConnectionString;
         private readonly string TableName;
 
-        public DbDataReader(string connectionString, string tableName)
+        public DbTestCaseProvider(string connectionString, string tableName)
         {
             ConnectionString = connectionString;
             TableName = tableName;
         }
 
-        public IEnumerable<dynamic> GetData() =>
-            GetData<dynamic>(() => new ExpandoObject(), (tc, k, v) =>
+        public IEnumerable<dynamic> Get() =>
+            GetGeneric<dynamic>(() => new ExpandoObject(), (tc, k, v) =>
             {
                 var testDataAsDictionary = (ICollection<KeyValuePair<string, object>>)tc;
                 testDataAsDictionary.Add(new KeyValuePair<string, object>(k, v));
             });
 
-        public IEnumerable<T> GetData<T>() where T : new() =>
-            GetData(() => Activator.CreateInstance<T>(), (tc, k, v) => tc.SetCastedValue(k, v));
+        public IEnumerable<T> Get<T>() =>
+            GetGeneric(() => Activator.CreateInstance<T>(), (tc, k, v) => tc.SetCastedValue(k, v));
 
+        public IEnumerable<TestCase<TCase, TResult>> GetTestCase<TCase, TResult>()
+            where TCase : new()
+            where TResult : new() =>
+            GetGeneric(() => Activator.CreateInstance<TestCase<TCase, TResult>>(), (tc, k, v) => tc.SetCastedValue(k, v));
 
-        private IEnumerable<T> GetData<T>(Func<T> initializeTestDataObject,
-            Action<T, string, object> setupPropertyValue) where T : new()
+        private IEnumerable<T> GetGeneric<T>(Func<T> initializeTestDataObject,
+            Action<T, string, object> setupPropertyValue)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {

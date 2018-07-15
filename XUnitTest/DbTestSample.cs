@@ -31,7 +31,7 @@ namespace ExcelTest
         }
 
         [Theory]
-        [DbData("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases", typeof(CarInsuranceDetailTestCase))]
+        [DbData("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases")]
         public void SampleExcelTestStonglyTyped(CarInsuranceDetailTestCase testData)
         {
             //ARRENGE

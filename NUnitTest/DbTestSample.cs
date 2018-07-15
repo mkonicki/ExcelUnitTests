@@ -31,7 +31,7 @@ namespace NUnitTest
         }
 
         [Test]
-        [DbTestCaseSource("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases", typeof(CarInsuranceDetailTestCase))]
+        [DbTestCaseSource("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases")]
         public void InsuranceTestStronglyTyped(CarInsuranceDetailTestCase testData)
         {
             //ARRENGE
