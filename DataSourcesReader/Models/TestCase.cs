@@ -18,9 +18,9 @@ namespace DataSourcesReaders.Models
 
         public void SetCastedValue(string key, object value)
         {
-            var properties = this.GetFlattenProperty(GetType()).ToArray();
+            var properties = this.GetFlattenProperties(GetType()).ToArray();
 
-            var property = properties.First(p => p.Property.Name == key);
+            var property = properties.Single(p => p.Property.Name == key);
 
             property.Value.SetCastedValue(property.Property.Name, value);
         }

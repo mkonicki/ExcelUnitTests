@@ -33,7 +33,7 @@ namespace DataSourcesReaders
             return Convert.ChangeType(value, property.PropertyType);
         }
 
-        public static IEnumerable<FlattenPropertyInfo> GetFlattenProperty(this object target, Type type)
+        public static IEnumerable<FlattenPropertyInfo> GetFlattenProperties(this object target, Type type)
         {
             foreach (var property in type.GetProperties())
             {
@@ -48,7 +48,7 @@ namespace DataSourcesReaders
 
                 else
                 {
-                    foreach (var flattenedProperties in GetFlattenProperty(property.GetValue(target), property.PropertyType))
+                    foreach (var flattenedProperties in GetFlattenProperties(property.GetValue(target), property.PropertyType))
                     {
                         yield return flattenedProperties;
                     }
