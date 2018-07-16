@@ -45,7 +45,6 @@ namespace DataSourcesReaders
                         Property = property
                     };
                 }
-
                 else
                 {
                     foreach (var flattenedProperties in GetFlattenProperties(property.GetValue(target), property.PropertyType))
@@ -55,11 +54,11 @@ namespace DataSourcesReaders
                 }
             }
         }
+    }
 
-        public class FlattenPropertyInfo
-        {
-            public object Value { get; set; }
-            public PropertyInfo Property { get; set; }
-        }
+    public class FlattenPropertyInfo
+    {
+        public object Value { get; set; }
+        public PropertyInfo Property { get; set; }
     }
 }
