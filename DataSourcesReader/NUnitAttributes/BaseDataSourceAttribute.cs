@@ -1,4 +1,5 @@
-﻿using DataSourcesReaders.Models;
+﻿using DataSourcesReaders.TestCaseProviders;
+using DataSourcesReaders.TestCaseProviders.Interfaces;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
@@ -6,19 +7,18 @@ using NUnit.Framework.Internal.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace DataSourcesReaders.NUnitAttributes
 {
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public abstract class BaseDataSourceAttribute : NUnitAttribute, ITestBuilder, IImplyFixture
     {
-        protected readonly ITestCaseProvider TestCaseProvider;
+        protected readonly ITestCaseProviderFactory Factory;
         protected readonly NUnitTestCaseBuilder Builder = new NUnitTestCaseBuilder();
 
-        protected BaseDataSourceAttribute(ITestCaseProvider testCaseReader)
+        protected BaseDataSourceAttribute(ITestCaseProvider testCaseProvider)
         {
-            TestCaseProvider = testCaseReader;
+            Factory = new TestCaseProviderFactory(testCaseProvider);
         }
 
         public abstract IEnumerable<TestMethod> BuildFrom(IMethodInfo method, Test suite);
@@ -27,46 +27,12 @@ namespace DataSourcesReaders.NUnitAttributes
         {
             var parameterType = testMethodInfo.GetParameters().First().ParameterType;
 
-            if (parameterType == typeof(object))
-            {
-                return TestCaseProvider.Get().Select(s => new TestCaseParameters(new[] { s }));
-            }
+            var method = Factory.GetProviderMethod(parameterType);
 
-            var method = InitializeGetDataMethod(parameterType);
-
-            var testCases = method.Invoke(TestCaseProvider, null);
+            var testCases = method.Invoke(Factory.TestCaseProvider, null);
 
             return ((IEnumerable<object>)testCases).Select(
                 s => new TestCaseParameters(new[] { s }));
-        }
-
-
-        private MethodInfo InitializeGetDataMethod(Type parameter)
-        {
-            if (!(parameter.IsGenericType
-                && parameter.Name.Contains(nameof(TestCase<dynamic, dynamic>))))
-            {
-                var getMethod = TestCaseProvider.GetType().GetMethods()
-                    .First(m => m.Name == nameof(ITestCaseProvider.Get) && m.IsGenericMethod);
-
-                return getMethod.MakeGenericMethod(new Type[] { parameter });
-            }
-
-            var testCaseMethod = TestCaseProvider.GetType().GetMethods()
-                .First(m => m.Name == nameof(ITestCaseProvider.GetTestCase) && m.IsGenericMethod);
-
-            var properties = parameter.GetProperties();
-
-            var caseType = properties
-                .First(s => s.Name == nameof(TestCase<dynamic, dynamic>.Case)).PropertyType;
-
-            var resultType = properties
-                .First(s => s.Name == nameof(TestCase<dynamic, dynamic>.Result)).PropertyType;
-
-            var methodDeclaration = TestCaseProvider.GetType().GetMethods()
-                .First(m => m.Name == nameof(ITestCaseProvider.GetTestCase) && m.IsGenericMethod);
-
-            return methodDeclaration.MakeGenericMethod(new Type[] { @caseType, resultType });
         }
     }
 }

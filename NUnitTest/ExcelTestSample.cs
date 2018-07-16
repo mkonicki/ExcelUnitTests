@@ -34,17 +34,6 @@ namespace NUnitTest
 
         [Test]
         [ExcelTestCaseSource("TestSample.xlsx", "CarInsurance")]
-        public void InsuranceTestTestCase(TestCase<CarInsuranceDetailDto, decimal> testCase)
-        {
-            //ACT
-            var insuranceCost = _calculationFactory.Calculate(testCase.Case);
-
-            //ASSERT
-            Assert.AreEqual(testCase.Result, insuranceCost);
-        }
-
-        [Test]
-        [ExcelTestCaseSource("TestSample.xlsx", "CarInsurance")]
         public void InsuranceTestObject(CarInsuranceDetailTestCase testCase)
         {
             //ARRENGE
@@ -59,6 +48,17 @@ namespace NUnitTest
 
             //ACT
             var insuranceCost = _calculationFactory.Calculate(@case);
+
+            //ASSERT
+            Assert.AreEqual(testCase.Result, insuranceCost);
+        }
+
+        [Test]
+        [ExcelTestCaseSource("TestSample.xlsx", "CarInsurance")]
+        public void InsuranceTestTestCase(TestCase<CarInsuranceDetailDto, decimal> testCase)
+        {
+            //ACT
+            var insuranceCost = _calculationFactory.Calculate(testCase.Case);
 
             //ASSERT
             Assert.AreEqual(testCase.Result, insuranceCost);

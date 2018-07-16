@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DataSourcesReaders.TestCaseProviders;
+using DataSourcesReaders.TestCaseProviders.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,28 +11,22 @@ namespace DataSourcesReaders.XUnitAttributes
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public abstract class BaseDataAttribute : DataAttribute
     {
-        private readonly ITestCaseProvider TestCaseReader;
+        protected readonly ITestCaseProviderFactory Factory;
 
-        protected BaseDataAttribute(ITestCaseProvider testCaseReader)
+        protected BaseDataAttribute(ITestCaseProvider testCaseProvider)
         {
-            TestCaseReader = testCaseReader;
+            Factory = new TestCaseProviderFactory(testCaseProvider);
         }
 
-        public IEnumerable<object[]> GetTestCases(MethodInfo testMethod)
+        public IEnumerable<object[]> GetTestCases(MethodInfo testMethodInfo)
         {
-            var dataType = testMethod.GetParameters().First().ParameterType;
+            var parameterType = testMethodInfo.GetParameters().First().ParameterType;
 
-            if (dataType == typeof(Object))
-            {
-                return TestCaseReader.Get().Select(s => new object[] { s });
-            }
+            var method = Factory.GetProviderMethod(parameterType);
 
-            var genericGetDataMethod = TestCaseReader.GetType().GetMethods()
-                .First(m => m.Name == nameof(ExcelTestCaseProvider.Get) && m.IsGenericMethod);
+            var testCases = method.Invoke(Factory.TestCaseProvider, null);
 
-            var getDataMethod = genericGetDataMethod.MakeGenericMethod(new Type[] { dataType });
-
-            return ((IEnumerable<object>)getDataMethod.Invoke(TestCaseReader, null)).Select(s => new object[] { s });
+            return ((IEnumerable<object>)testCases).Select(s => new object[] { s });
         }
     }
 }

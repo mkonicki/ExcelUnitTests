@@ -24,22 +24,21 @@ namespace DataSourcesReaders
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
-        public IEnumerable<dynamic> Get() =>
+        public IEnumerable<dynamic> GetDynamic() =>
             GetGeneric<dynamic>(() => new ExpandoObject(), (tc, k, v) =>
             {
                 var testDataAsDictionary = (ICollection<KeyValuePair<string, object>>)tc;
                 testDataAsDictionary.Add(new KeyValuePair<string, object>(k, v));
             });
 
-        public IEnumerable<TestCase<TCase, TResult>> GetTestCase<TCase, TResult>()
+        public IEnumerable<TestCase<TCase, TResult>> GetTestCases<TCase, TResult>()
             where TCase : new()
             where TResult : new()
             => GetGeneric(() => Activator.CreateInstance<TestCase<TCase, TResult>>(), (tc, k, v) => tc.SetCastedValue(k, v));
 
-        public IEnumerable<T> Get<T>()
-        {
-            return GetGeneric(() => Activator.CreateInstance<T>(), (tc, k, v) => tc.SetCastedValue(k, v));
-        }
+        public IEnumerable<T> GetGeneric<T>() where T : new()
+            => GetGeneric(() => Activator.CreateInstance<T>(), (tc, k, v) => tc.SetCastedValue(k, v));
+
 
         private IEnumerable<T> GetGeneric<T>(Func<T> initializeTestDataObject,
             Action<T, string, object> setupPropertyValue)
