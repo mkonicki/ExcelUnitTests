@@ -1,41 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using DataSourcesReaders.TestCaseProviders;
+using DataSourcesReaders.TestCaseProviders.Interfaces;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
 using NUnit.Framework.Internal.Builders;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DataSourcesReaders.NUnitAttributes
 {
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public abstract class BaseDataSourceAttribute : NUnitAttribute, ITestBuilder, IImplyFixture
     {
-        protected readonly ITestCaseReader TestCaseReader;
+        protected readonly ITestCaseProviderFactory Factory;
         protected readonly NUnitTestCaseBuilder Builder = new NUnitTestCaseBuilder();
-        protected readonly Type DataType;
 
-        protected BaseDataSourceAttribute(ITestCaseReader testCaseReader, Type dataType)
+        protected BaseDataSourceAttribute(ITestCaseProvider testCaseProvider)
         {
-            TestCaseReader = testCaseReader;
-            DataType = dataType;
+            Factory = new TestCaseProviderFactory(testCaseProvider);
         }
 
         public abstract IEnumerable<TestMethod> BuildFrom(IMethodInfo method, Test suite);
 
-        protected IEnumerable<TestCaseParameters> GetTestCases()
+        protected IEnumerable<TestCaseParameters> GetTestCases(IMethodInfo testMethodInfo)
         {
-            if (DataType == null)
-            {
-                return TestCaseReader.GetData().Select(s => new TestCaseParameters(new[] { s }));
-            }
+            var parameterType = testMethodInfo.GetParameters().First().ParameterType;
 
-            var getDataMethod = TestCaseReader.GetType().GetMethods()
-                .First(m => m.Name == nameof(ITestCaseReader.GetData) && m.IsGenericMethod);
+            var method = Factory.GetProviderMethod(parameterType);
 
-            var getData = getDataMethod.MakeGenericMethod(DataType);
+            var testCases = method.Invoke(Factory.TestCaseProvider, null);
 
-            return ((IEnumerable<object>)getData.Invoke(TestCaseReader, null)).Select(
+            return ((IEnumerable<object>)testCases).Select(
                 s => new TestCaseParameters(new[] { s }));
         }
     }

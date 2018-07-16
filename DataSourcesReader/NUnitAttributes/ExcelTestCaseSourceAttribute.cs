@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using DataSourcesReaders.NUnitAttributes;
+﻿using DataSourcesReaders.NUnitAttributes;
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
+using System;
+using System.Collections.Generic;
 
 namespace DataSourcesReaders
 {
@@ -10,18 +10,13 @@ namespace DataSourcesReaders
     public class ExcelTestCaseSourceAttribute : BaseDataSourceAttribute
     {
         public ExcelTestCaseSourceAttribute(string filePath, string sheetName)
-            : this(filePath, sheetName, null)
-        {
-        }
-
-        public ExcelTestCaseSourceAttribute(string filePath, string sheetName, Type dataType)
-            : base(new ExcelTestCaseReader(filePath, sheetName), dataType)
+            : base(new ExcelTestCaseProvider(filePath, sheetName))
         {
         }
 
         public override IEnumerable<TestMethod> BuildFrom(IMethodInfo method, Test suite)
         {
-            foreach (var testCases in GetTestCases())
+            foreach (var testCases in GetTestCases(method))
             {
                 yield return Builder.BuildTestMethod(method, suite, testCases);
             }
