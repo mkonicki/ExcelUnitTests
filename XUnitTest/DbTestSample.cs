@@ -1,4 +1,5 @@
-﻿using DataSourcesReaders.XUnitAttributes;
+﻿using DataSourcesReaders.Models;
+using DataSourcesReaders.XUnitAttributes;
 using InsuranceModule;
 using Xunit;
 
@@ -11,44 +12,55 @@ namespace ExcelTest
 
         [Theory]
         [DbData("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases")]
-        public void SampleExcelTestDynamic(dynamic testData)
+        public void InsuranceTestObject(dynamic testCase)
         {
             //ARRENGE
-            var testCase = new CarInsuranceDetailDto
+            var @case = new CarInsuranceDetailDto
             {
-                Age = (int)testData.Age,
-                Brand = (CarBrand)testData.Brand,
-                EngineCapacity = (decimal)testData.EngineCapacity,
-                FuelType = (FuelType)testData.FuelType,
-                InsuranceType = (InsuranceType)testData.InsuranceType
+                Age = (int)testCase.Age,
+                Brand = (CarBrand)testCase.Brand,
+                EngineCapacity = (decimal)testCase.EngineCapacity,
+                FuelType = (FuelType)testCase.FuelType,
+                InsuranceType = (InsuranceType)testCase.InsuranceType
             };
 
             //ACT
-            var insuranceCost = _calculationFactory.Calculate(testCase);
+            var insuranceCost = _calculationFactory.Calculate(@case);
 
             //ASSERT
-            Assert.Equal((decimal)testData.Result, insuranceCost);
+            Assert.Equal((decimal)testCase.Result, insuranceCost);
         }
 
         [Theory]
-        [DbData("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases", typeof(CarInsuranceDetailTestCase))]
-        public void SampleExcelTestStonglyTyped(CarInsuranceDetailTestCase testData)
+        [DbData("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases")]
+        public void InsuranceTestGeneric(CarInsuranceDetailTestCase testCase)
         {
             //ARRENGE
-            var testCase = new CarInsuranceDetailDto
+            var @case = new CarInsuranceDetailDto
             {
-                Age = testData.Age,
-                Brand = testData.Brand,
-                EngineCapacity = testData.EngineCapacity,
-                FuelType = testData.FuelType,
-                InsuranceType = testData.InsuranceType
+                Age = testCase.Age,
+                Brand = testCase.Brand,
+                EngineCapacity = testCase.EngineCapacity,
+                FuelType = testCase.FuelType,
+                InsuranceType = testCase.InsuranceType
             };
 
             //ACT
-            var insuranceCost = _calculationFactory.Calculate(testCase);
+            var insuranceCost = _calculationFactory.Calculate(@case);
 
             //ASSERT
-            Assert.Equal(testData.Result, insuranceCost);
+            Assert.Equal(testCase.Result, insuranceCost);
+        }
+
+        [Theory]
+        [DbData("TestSample.xlsx", "CarInsurance")]
+        public void InsuranceTestTestCase(TestCase<CarInsuranceDetailDto, decimal> testCase)
+        {
+            //ACT
+            var insuranceCost = _calculationFactory.Calculate(testCase.Case);
+
+            //ASSERT
+            Assert.Equal(testCase.Result, insuranceCost);
         }
     }
 }

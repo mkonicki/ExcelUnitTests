@@ -7,19 +7,15 @@ namespace DataSourcesReaders.XUnitAttributes
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public class DbDataAttribute : BaseDataAttribute
     {
-        public DbDataAttribute(string connectionString, string tableName) :
-           this(connectionString, tableName, null)
-        {
-        }
 
-        public DbDataAttribute(string connectionString, string tableName, Type dataType) :
-            base(new DbDataReader(connectionString, tableName), dataType)
+        public DbDataAttribute(string connectionString, string tableName) :
+            base(new DbTestCaseProvider(connectionString, tableName))
         {
         }
 
         public override IEnumerable<object[]> GetData(MethodInfo testMethod)
         {
-            return GetTestCases();
+            return GetTestCases(testMethod);
         }
     }
 }
