@@ -1,3 +1,4 @@
+
 # DDT(Data-Driven Testing) is alive!  
 Sample of usage DDT pattern with XUnit and NUnit libraries.
 
@@ -17,13 +18,13 @@ I created simple Data Source Providers to read from mssql database, or excel spr
  
 	- dynamic `[DbData("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases")]`
 	
-	- strongly typed  `[DbData("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases", typeof(CarInsuranceDetailTestCase))]`
+	- strongly typed, or TestCase<Dto, Result>   `[DbData("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases", typeof(CarInsuranceDetailTestCase))]`
 	
  - [ExcelDataAttribute.cs](https://github.com/mkonicki/DDT-Unit-Tests/blob/master/DataSourcesReader/XUnitAttributes/ExcelDataAttribute.cs)
  
 	- dynamic `[ExcelData("TestSample.xlsx", "CarInsurance")]`
 	
-	- strongly typed  ` [ExcelData("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]`
+	- strongly typed, or TestCase<Dto, Result>   ` [ExcelData("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]`
 
 
 ### NUnit
@@ -31,13 +32,13 @@ I created simple Data Source Providers to read from mssql database, or excel spr
   
 	- dynamic -  `[DbTestCaseSource("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases")]`
 	
-	- strongly typed - 	`[DbTestCaseSource("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases", typeof(CarInsuranceDetailTestCase))]`
+	- strongly typed, or TestCase<Dto, Result>  - 	`[DbTestCaseSource("data source=.;initial catalog=Test;integrated security=True;", "dbo.TestCases", typeof(CarInsuranceDetailTestCase))]`
 
  - [ExcelTestCaseSourceAttribute](https://github.com/mkonicki/DDT-Unit-Tests/blob/master/DataSourcesReader/NUnitAttributes/ExcelTestCaseSourceAttribute.cs)
   
 	- dynamic -  `[ExcelTestCaseSource("TestSample.xlsx", "CarInsurance")]`
 	
-	- strongly typed - 	`[ExcelTestCaseSource("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]`
+	- strongly typed, or TestCase<Dto, Result> - 	`[ExcelTestCaseSource("TestSample.xlsx", "CarInsurance", typeof(CarInsuranceDetailTestCase))]`
 
 
 ## Sample of usage
@@ -45,52 +46,28 @@ I created simple Data Source Providers to read from mssql database, or excel spr
 To present how use attributes, and DDT pattern in practice, I created simple factory to calculate [Car Insurance](https://github.com/mkonicki/ExcelUnitTests/blob/master/InsuranceModule/InsuranceCalculationFactory.cs).
 
 ### [XUnit](https://github.com/mkonicki/ExcelUnitTests/blob/master/ExcelTest/ExcelTestSample.cs)
-
     [Theory]
     [ExcelData("TestSample.xlsx", "CarInsurance")]
-    public void SampleExcelTest(dynamic testData)
+    public void InsuranceTestTestCase(TestCase<CarInsuranceDetailDto, decimal> testCase)
     {
-        //ARRENGE
-        var testCase = new CarInsuranceDetailDto
-        {
-            Age = (int)testData.Age,
-            Brand = (CarBrand)testData.Brand,
-            EngineCapacity = (decimal)testData.EngineCapacity,
-            FuelType = (FuelType)testData.FuelType,
-            InsuranceType = (InsuranceType)testData.InsuranceType
-        };
+	    //ACT
+	    var insuranceCost = _calculationFactory.Calculate(testCase.Case);
     
-        //ACT
-        var insuranceCost = _calculationFactory.Calculate(testCase);
-    
-        //ASSERT
-        Assert.Equal((decimal)testData.Result, insuranceCost);
+	    //ASSERT
+	    Assert.Equal(testCase.Result, insuranceCost);
     }
-
 
 ### [NUnit](https://github.com/mkonicki/ExcelUnitTests/blob/master/ExcelNUnitTest/ExcelTestSample.cs)
-
-
-    [Test]
-    [ExcelTestCaseSource("TestSample.xlsx", "CarInsurance")]
-    public void InsuranceTest(dynamic testData)
-    {
-        //ARRENGE
-        var testCase = new CarInsuranceDetailDto
-        {
-            Age = (int)testData.Age,
-            Brand = (CarBrand)testData.Brand,
-            EngineCapacity = (decimal)testData.EngineCapacity,
-            FuelType = (FuelType)testData.FuelType,
-            InsuranceType = (InsuranceType)testData.InsuranceType
-        };
-     
-        //ACT
-        var insuranceCost = _calculationFactory.Calculate(testCase);
-     
-        //ASSERT
-        Assert.AreEqual((decimal)testData.Result, insuranceCost);
-    }
+    [Test]    
+    [ExcelTestCaseSource("TestSample.xlsx", "CarInsurance")]    
+    public void InsuranceTestTestCase(TestCase<CarInsuranceDetailDto, decimal> testCase)
+    {    
+	   //ACT    
+	   var insuranceCost = _calculationFactory.Calculate(testCase.Case);
+	   
+	   //ASSERT
+	   Assert.AreEqual(testCase.Result, insuranceCost);
+	}
 
 ## Blog
 Soon I will finish post on my blog, how I used in practice very similar mechanism to create thousands of unit tests for risk calculation in my project for Fenergo.
