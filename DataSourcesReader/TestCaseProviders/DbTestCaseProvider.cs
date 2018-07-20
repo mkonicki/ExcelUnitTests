@@ -36,6 +36,7 @@ namespace DataSourcesReaders
 
         private IEnumerable<T> GetGeneric<T>(Func<T> initializeTestDataObject,
             Action<T, string, object> setupPropertyValue)
+            where T : new()
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -48,25 +49,32 @@ namespace DataSourcesReaders
                     var dataTable = new DataTable();
                     sqlDataAdapter.Fill(dataTable);
 
-                    foreach (var row in dataTable.Rows)
+                    foreach (DataRow row in dataTable.Rows)
                     {
-                        var testCase = initializeTestDataObject.Invoke();
 
-                        for (int i = 0; i < dataTable.Columns.Count; i++)
-                        {
-                            var dataRow = ((DataRow)row);
-                            var value = dataRow[i];
-                            var key = dataTable.Columns[i].ColumnName;
-
-                            setupPropertyValue.Invoke(testCase, key, value);
-                        }
-
-                        yield return testCase;
+                        yield return GetTestDataObject(initializeTestDataObject, setupPropertyValue, dataTable, row);
                     }
                 }
 
                 connection.Close();
             }
+        }
+
+        private T GetTestDataObject<T>(Func<T> initializeTestDataObject,
+           Action<T, string, object> setupPropertyValue, DataTable table, DataRow row)
+           where T : new()
+        {
+            var testCase = initializeTestDataObject.Invoke();
+
+            for (int i = 0; i < table.Columns.Count; i++)
+            {
+                var value = row[i];
+                var key = table.Columns[i].ColumnName;
+
+                setupPropertyValue.Invoke(testCase, key, value);
+            }
+
+            return testCase;
         }
     }
 }

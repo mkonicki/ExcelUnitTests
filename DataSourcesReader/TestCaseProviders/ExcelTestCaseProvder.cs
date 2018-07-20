@@ -39,32 +39,38 @@ namespace DataSourcesReaders
         public IEnumerable<T> GetGeneric<T>() where T : new()
             => GetGeneric(() => Activator.CreateInstance<T>(), (tc, k, v) => tc.SetCastedValue(k, v));
 
-
         private IEnumerable<T> GetGeneric<T>(Func<T> initializeTestDataObject,
             Action<T, string, object> setupPropertyValue)
+            where T : new()
         {
             using (var excelPackage = new ExcelPackage(new FileInfo(FilePath)))
             {
-
                 var worksheets = excelPackage.Workbook.Worksheets;
                 var sheet = worksheets.ToList().First(s => s.Name == SheetName);
 
-                for (int i = FirstDataRow; i <= sheet.Dimension.End.Row; i++)
+                for (int rowIndex = FirstDataRow; rowIndex <= sheet.Dimension.End.Row; rowIndex++)
                 {
-                    var testCase = initializeTestDataObject.Invoke();
-
-                    for (int j = LabelDataRow; j <= sheet.Dimension.End.Column; j++)
-                    {
-                        var labelCell = sheet.Cells[LabelDataRow, j];
-                        var key = labelCell.Value.ToString();
-                        var value = sheet.Cells[i, j].Value;
-
-                        setupPropertyValue.Invoke(testCase, key, value);
-                    }
-
-                    yield return testCase;
+                    yield return GetTestDataObject(initializeTestDataObject, setupPropertyValue, sheet, rowIndex);
                 }
             }
+        }
+
+        private T GetTestDataObject<T>(Func<T> initializeTestDataObject,
+            Action<T, string, object> setupPropertyValue, ExcelWorksheet sheet, int rowIndex)
+            where T : new()
+        {
+            var testCase = initializeTestDataObject.Invoke();
+
+            for (int columnIndex = LabelDataRow; columnIndex <= sheet.Dimension.End.Column; columnIndex++)
+            {
+                var labelCell = sheet.Cells[LabelDataRow, columnIndex];
+                var key = labelCell.Value.ToString();
+                var value = sheet.Cells[rowIndex, columnIndex].Value;
+
+                setupPropertyValue.Invoke(testCase, key, value);
+            }
+
+            return testCase;
         }
     }
 }
