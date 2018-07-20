@@ -2,6 +2,7 @@
 # DDT(Data-Driven Testing) is alive!  
 [![DDTsterNuGet](https://img.shields.io/nuget/v/DDTster.svg?label=DDTster)](https://www.nuget.org/packages/DDTster)<br />
 Sample of usage DDT pattern with XUnit and NUnit libraries.
+[![BCH compliance](https://bettercodehub.com/edge/badge/mkonicki/DDT-Unit-Tests?branch=master)](https://bettercodehub.com/)
 
 ## What is it? 
  In this solution I want to provide sample how to use external files, to provide highest code quality, by preparing thousands of unit tests in one simple [XUnit](https://xunit.github.io/), or [NUnit](http://nunit.org/) test.
