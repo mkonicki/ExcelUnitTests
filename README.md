@@ -1,5 +1,6 @@
 
 # DDT(Data-Driven Testing) is alive!  
+[![DDTsterNuGet](https://img.shields.io/nuget/v/DDTster.svg?label=DDTster)](https://www.nuget.org/packages/DDTster)<br />
 Sample of usage DDT pattern with XUnit and NUnit libraries.
 
 ## What is it? 
@@ -13,6 +14,13 @@ Nothing special just an idea, how to minimalize stress and hot fixes after relas
 
 ## How is it done?  
 I created simple Data Source Providers to read from mssql database, or excel spreadsheet (CSV provider, and another database providers are during implementation). Each attributes has 2 cases of usage, dynamic, where simple test case is provided to method as dynamic object, or strongly typed where we provide type as parameter in attribute.
+## Download
+
+The easiest way to download is via NuGet:
+```
+Install-Package DDTster
+```
+## Attributes
 ### XUnit
  - [DbDataAttribute.cs](https://github.com/mkonicki/DDT-Unit-Tests/blob/master/DataSourcesReader/XUnitAttributes/DbDataAttribute.cs)
  
