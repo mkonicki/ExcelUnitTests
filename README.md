@@ -1,6 +1,6 @@
 
 # DDT(Data-Driven Testing) is alive!  
-[![DDTsterNuGet](https://img.shields.io/nuget/v/DDTster.svg?style=flat-square&label=DDTster)](https://www.nuget.org/packages/DDTster)<br />
+[![DDTsterNuGet](https://img.shields.io/nuget/v/DDTster.svg?label=DDTster)](https://www.nuget.org/packages/DDTster)<br />
 Sample of usage DDT pattern with XUnit and NUnit libraries.
 
 ## What is it? 
