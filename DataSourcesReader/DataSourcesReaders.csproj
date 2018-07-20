@@ -4,6 +4,23 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <StartupObject />
     <AssemblyName>DDTReader</AssemblyName>
+    <Version>0.1.0</Version>
+    <Authors>MKonicki</Authors>
+    <Description>Part of attributes to enable DDT Pattern for NUnit and XUnit</Description>
+    <RepositoryUrl>https://github.com/mkonicki/DDT-Unit-Tests</RepositoryUrl>
+    <RepositoryType>MIT</RepositoryType>
+    <AssemblyVersion>0.0.1.0</AssemblyVersion>
+    <FileVersion>0.0.1.0</FileVersion>
+    <Copyright>© 2018 Mateusz Konicki and other contributors under the MIT license.</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <SignAssembly>false</SignAssembly>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <NeutralLanguage />
+    <PackageReleaseNotes>First release with 2 attributes providing connection with Excel File and Database</PackageReleaseNotes>
+    <PackageTags>NUnit, XUnit</PackageTags>
+    <PackageId>DDTster</PackageId>
+    <Product>DDTster</Product>
+	<IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
