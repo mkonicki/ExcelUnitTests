@@ -9,6 +9,7 @@ namespace DataSourcesReaders.TestCaseProviders
     public class TestCaseProviderFactory : ITestCaseProviderFactory
     {
         public ITestCaseProvider TestCaseProvider { get; }
+        public Type TestCaseProviderType => TestCaseProvider.GetType();
 
         public TestCaseProviderFactory(ITestCaseProvider testCaseProvider)
         {
@@ -19,18 +20,32 @@ namespace DataSourcesReaders.TestCaseProviders
         {
             if (parameterType == typeof(object))
             {
-                return TestCaseProvider.GetType().GetMethod(nameof(ITestCaseProvider.GetDynamic));
+                return GetDynamicMethodInfo(parameterType);
             }
 
-            if (!(parameterType.IsGenericType
-                && parameterType.Name.Contains(nameof(TestCase<dynamic, dynamic>))))
+            if (!parameterType.IsGenericType
+                || !parameterType.Name.Contains(nameof(TestCase<dynamic, dynamic>)))
             {
-                var genericMethodDeclaration = TestCaseProvider.GetType().GetMethods()
-                    .First(m => m.Name == nameof(ITestCaseProvider.GetGeneric) && m.IsGenericMethod);
-
-                return genericMethodDeclaration.MakeGenericMethod(new Type[] { parameterType });
+                return GetGenericMethodInfo(parameterType);
             }
 
+            return GetTestCaseMethodInfo(parameterType);
+        }
+
+        private MethodInfo GetDynamicMethodInfo(Type parameterType)
+        {
+            return TestCaseProviderType.GetMethod(nameof(ITestCaseProvider.GetDynamic));
+        }
+
+        private MethodInfo GetGenericMethodInfo(Type parameterType)
+        {
+            var genericMethodDeclaration = TestCaseProviderType.GetMethod(nameof(ITestCaseProvider.GetGeneric));
+
+            return genericMethodDeclaration.MakeGenericMethod(new Type[] { parameterType });
+        }
+
+        private MethodInfo GetTestCaseMethodInfo(Type parameterType)
+        {
             var properties = parameterType.GetProperties();
 
             var caseType = properties
@@ -39,10 +54,9 @@ namespace DataSourcesReaders.TestCaseProviders
             var resultType = properties
                 .Single(s => s.Name == nameof(TestCase<dynamic, dynamic>.Result)).PropertyType;
 
-            var methodDeclaration = TestCaseProvider.GetType().GetMethods()
-                .First(m => m.Name == nameof(ITestCaseProvider.GetTestCases) && m.IsGenericMethod);
+            var methodDeclaration = TestCaseProviderType.GetMethod(nameof(ITestCaseProvider.GetTestCases));
 
-            return methodDeclaration.MakeGenericMethod(new Type[] { @caseType, resultType });
+            return methodDeclaration.MakeGenericMethod(new Type[] { caseType, resultType });
         }
     }
 }

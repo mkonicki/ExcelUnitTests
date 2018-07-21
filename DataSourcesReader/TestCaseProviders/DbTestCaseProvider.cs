@@ -1,4 +1,5 @@
-﻿using DataSourcesReaders.Models;
+﻿using DataSourcesReaders.Helpers;
+using DataSourcesReaders.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -19,23 +20,35 @@ namespace DataSourcesReaders
         }
 
         public IEnumerable<dynamic> GetDynamic() =>
-            GetGeneric<dynamic>(() => new ExpandoObject(), (tc, k, v) =>
-            {
-                var testDataAsDictionary = (ICollection<KeyValuePair<string, object>>)tc;
-                testDataAsDictionary.Add(new KeyValuePair<string, object>(k, v));
-            });
+            ReadDataFromSource<dynamic>(
+                () => new ExpandoObject(),
+                (tc, k, v) =>
+                {
+                    var testDataAsDictionary = (ICollection<KeyValuePair<string, object>>)tc;
+                    testDataAsDictionary.Add(new KeyValuePair<string, object>(k, v));
+                }
+            );
 
         public IEnumerable<T> GetGeneric<T>()
             where T : new() =>
-            GetGeneric(() => Activator.CreateInstance<T>(), (tc, k, v) => tc.SetCastedValue(k, v));
+            ReadDataFromSource(
+                () => Activator.CreateInstance<T>(),
+                (tc, k, v) => tc.SetCastedValue(k, v)
+            );
 
         public IEnumerable<TestCase<TCase, TResult>> GetTestCases<TCase, TResult>()
             where TCase : new()
             where TResult : new() =>
-            GetGeneric(() => Activator.CreateInstance<TestCase<TCase, TResult>>(), (tc, k, v) => tc.SetCastedValue(k, v));
+            ReadDataFromSource(
+                () => Activator.CreateInstance<TestCase<TCase, TResult>>(),
+                (tc, k, v) => tc.SetCastedValue(k, v));
 
-        private IEnumerable<T> GetGeneric<T>(Func<T> initializeTestDataObject,
-            Action<T, string, object> setupPropertyValue)
+        private IEnumerable<T> ReadDataFromSource<T>(Func<T> initializeObject, Action<T, string, object> setupValue)
+            where T : new()
+            => ReadDataFromSource(new TestCaseWrapper<T>(initializeObject, setupValue));
+
+        private IEnumerable<T> ReadDataFromSource<T>(TestCaseWrapper<T> testCaseWrapper)
+            where T : new()
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -45,28 +58,33 @@ namespace DataSourcesReaders
 
                 using (var sqlDataAdapter = new SqlDataAdapter(command))
                 {
-                    var dataTable = new DataTable();
-                    sqlDataAdapter.Fill(dataTable);
+                    var dataTable = sqlDataAdapter.GetAsDataTable();
 
-                    foreach (var row in dataTable.Rows)
+                    foreach (DataRow row in dataTable.Rows)
                     {
-                        var testCase = initializeTestDataObject.Invoke();
-
-                        for (int i = 0; i < dataTable.Columns.Count; i++)
-                        {
-                            var dataRow = ((DataRow)row);
-                            var value = dataRow[i];
-                            var key = dataTable.Columns[i].ColumnName;
-
-                            setupPropertyValue.Invoke(testCase, key, value);
-                        }
-
-                        yield return testCase;
+                        yield return GetTestDataObject(testCaseWrapper,
+                            new TestSourceWrapper<DataTable, DataRow>(dataTable, row));
                     }
                 }
 
                 connection.Close();
             }
+        }
+
+        private T GetTestDataObject<T>(TestCaseWrapper<T> testCaseWrapper, TestSourceWrapper<DataTable, DataRow> testSource)
+           where T : new()
+        {
+            var testCase = testCaseWrapper.Initialize.Invoke();
+
+            for (int i = 0; i < testSource.Table.Columns.Count; i++)
+            {
+                var value = testSource.Row[i];
+                var key = testSource.Table.Columns[i].ColumnName;
+
+                testCaseWrapper.SetupValue.Invoke(testCase, key, value);
+            }
+
+            return testCase;
         }
     }
 }
