@@ -39,11 +39,7 @@ namespace DataSourcesReaders
             {
                 if (property.PropertyType.IsValueType)
                 {
-                    yield return new FlattenPropertyInfo
-                    {
-                        Value = target is PropertyInfo ? property.GetValue(target) : target,
-                        Property = property
-                    };
+                    yield return new FlattenPropertyInfo(target is PropertyInfo ? property.GetValue(target) : target, property);
                 }
                 else
                 {
@@ -60,5 +56,11 @@ namespace DataSourcesReaders
     {
         public object Value { get; set; }
         public PropertyInfo Property { get; set; }
+
+        public FlattenPropertyInfo(object value, PropertyInfo property)
+        {
+            Value = value;
+            Property = property;
+        }
     }
 }
