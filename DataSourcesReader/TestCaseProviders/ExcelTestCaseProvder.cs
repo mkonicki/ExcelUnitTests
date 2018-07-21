@@ -53,21 +53,23 @@ namespace DataSourcesReaders
 
                 for (int rowIndex = FirstDataRow; rowIndex <= sheet.Dimension.End.Row; rowIndex++)
                 {
-                    yield return GetTestDataObject(testCaseWrapper, sheet, rowIndex);
+                    yield return GetTestDataObject(testCaseWrapper,
+                        new TestSourceWrapper<ExcelWorksheet, int>(sheet, rowIndex));
                 }
             }
         }
 
-        private T GetTestDataObject<T>(TestCaseWrapper<T> testCaseWrapper, ExcelWorksheet sheet, int rowIndex)
+        private T GetTestDataObject<T>(TestCaseWrapper<T> testCaseWrapper, TestSourceWrapper<ExcelWorksheet, int> testSource)
             where T : new()
         {
             var testCase = testCaseWrapper.Initialize.Invoke();
+            var endColumnIndex = testSource.Table.Dimension.End.Column;
 
-            for (int columnIndex = LabelDataRow; columnIndex <= sheet.Dimension.End.Column; columnIndex++)
+            for (int columnIndex = LabelDataRow; columnIndex <= endColumnIndex; columnIndex++)
             {
-                var labelCell = sheet.Cells[LabelDataRow, columnIndex];
+                var labelCell = testSource.Table.Cells[LabelDataRow, columnIndex];
                 var key = labelCell.Value.ToString();
-                var value = sheet.Cells[rowIndex, columnIndex].Value;
+                var value = testSource.Table.Cells[testSource.Row, columnIndex].Value;
 
                 testCaseWrapper.SetupValue.Invoke(testCase, key, value);
             }

@@ -1,4 +1,5 @@
-﻿using DataSourcesReaders.Models;
+﻿using DataSourcesReaders.Helpers;
+using DataSourcesReaders.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -57,12 +58,12 @@ namespace DataSourcesReaders
 
                 using (var sqlDataAdapter = new SqlDataAdapter(command))
                 {
-                    var dataTable = new DataTable();
-                    sqlDataAdapter.Fill(dataTable);
+                    var dataTable = sqlDataAdapter.GetAsDataTable();
 
                     foreach (DataRow row in dataTable.Rows)
                     {
-                        yield return GetTestDataObject(testCaseWrapper, dataTable, row);
+                        yield return GetTestDataObject(testCaseWrapper,
+                            new TestSourceWrapper<DataTable, DataRow>(dataTable, row));
                     }
                 }
 
@@ -70,15 +71,15 @@ namespace DataSourcesReaders
             }
         }
 
-        private T GetTestDataObject<T>(TestCaseWrapper<T> testCaseWrapper, DataTable table, DataRow row)
+        private T GetTestDataObject<T>(TestCaseWrapper<T> testCaseWrapper, TestSourceWrapper<DataTable, DataRow> testSource)
            where T : new()
         {
             var testCase = testCaseWrapper.Initialize.Invoke();
 
-            for (int i = 0; i < table.Columns.Count; i++)
+            for (int i = 0; i < testSource.Table.Columns.Count; i++)
             {
-                var value = row[i];
-                var key = table.Columns[i].ColumnName;
+                var value = testSource.Row[i];
+                var key = testSource.Table.Columns[i].ColumnName;
 
                 testCaseWrapper.SetupValue.Invoke(testCase, key, value);
             }
