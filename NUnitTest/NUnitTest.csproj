@@ -18,6 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="TestSample.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TestSample.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
